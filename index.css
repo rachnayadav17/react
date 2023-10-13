@@ -58,5 +58,8 @@
     border-radius: 5px; 
     cursor: pointer; 
 }
-
+.filter-btn{
+    margin:10px;
+    cursor: pointer;
+}
 
