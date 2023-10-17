@@ -1,13 +1,14 @@
 import RestaurantCard from "./RestaurantCard";
 import { useEffect, useState } from "react";
 import Shimmer from "./Shimmer";
+import { Link } from "react-router-dom";
+
 
 const Body=()=>{
     const[listOfRestaurant,setListOfRestaurant]=useState([]);
     const[searchText,setSearchText]=useState("")
     const[filteredRestaurant,setFilteredRestaurant]=useState([]);
     useEffect(()=>{
-        // console.log("Effect rendered")
         fetchData();
     },[]);
 
@@ -16,15 +17,16 @@ const Body=()=>{
         );
     
         const json=await data.json();
-        console.log(json.data.cards[2].card.card.gridElements.infoWithStyle.restaurants);
-        setListOfRestaurant(json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+        console.log(json.data);
+        const fRestaurants = json?.data?.cards.filter((c) => c?.card?.card?.id === 'top_brands_for_you')
+        setListOfRestaurant(fRestaurants[0]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
         setFilteredRestaurant(json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
       
     }
-    // if (listOfRestaurant.length==0){
-    //     return <Shimmer/>
-    // }
-    return listOfRestaurant.length==0 ?(<Shimmer/>):(
+    if (listOfRestaurant == null){
+        return <Shimmer/>
+    }
+    return listOfRestaurant.length===0 ?(<Shimmer/>):(
         <div className="body">
         <div className="filter">
             <div className="serach">
@@ -47,7 +49,10 @@ const Body=()=>{
             </div>
         <div className="restaurant-container">
         {filteredRestaurant.map((restaurant) => (
-          <RestaurantCard key={restaurant?.info.id} resData={restaurant?.info} />
+          <Link
+          key={restaurant.info.id}
+          to={"/restaurants/" + restaurant.info.id}><RestaurantCard resData={restaurant.info} /></Link>
+          
         ))}
         </div>
         </div>
